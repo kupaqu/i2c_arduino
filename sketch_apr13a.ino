@@ -43,14 +43,13 @@ unsigned long t = millis();
 void loop() {
     if (Serial.available()) { // loop through all but the last
       sendTo = Serial.read() - '0'; 
+
       // send to previous
-      if (sendTo == 'p' - '0') {
+      if (sendTo == 'p' - '0')
         sendTo = recvFrom;
-      }
       // send to all
-      if (sendTo == 'p' - '0') {
-        sendTo = 0;
-      }
+      if (sendTo == 'a' - '0')
+        sendTo = 0; // 0x00 address is a broadcasting addresss
       
       Serial.write("receiver's id: ");
       Serial.write(sendTo + '0');
@@ -63,7 +62,7 @@ void loop() {
       Serial.read(); // read the space char
       
       Wire.write(myId); // first byte in message is an id
-      while (Serial.available()){
+      while (Serial.available()) {
         char c = Serial.read(); // receive byte as a character
         Serial.write(c);
         Wire.write(c);         // print the character

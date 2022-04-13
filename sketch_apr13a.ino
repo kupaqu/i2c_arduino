@@ -68,5 +68,6 @@ void loop() {
         Wire.write(c);         // print the character
       }
       Wire.endTransmission(); 
+      Serial.write("\n");
     }
 }

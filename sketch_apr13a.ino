@@ -12,9 +12,10 @@
 
 #include <Wire.h>
 
-int sendTo;
+unsigned char sendTo;
 int recvFrom = 0;
-char myId = 1;
+unsigned char myId = 1;
+static auto def_twar;  
 
 void receiveEvent(int howMany) {
   recvFrom = Wire.read(); // first byte is an id of sender
@@ -35,7 +36,8 @@ void setup() {
   Serial.begin(9600);   
   Wire.begin(myId); // join i2c bus (address optional for master)
   Wire.onReceive(receiveEvent);
-  TWAR = (1 << 1) | 1; // enables broadcasting
+//  TWAR = (1 << 1) | 1; // enables broadcasting
+  def_twar = TWAR;
 }
 
 unsigned long t = millis();
@@ -48,8 +50,12 @@ void loop() {
       if (sendTo == 'p' - '0')
         sendTo = recvFrom;
       // send to all
-      if (sendTo == 'a' - '0')
+      if (sendTo == 'a' - '0') {
+        TWAR = (1 << 1) | 1;
         sendTo = 0; // 0x00 address is a broadcasting addresss
+      } else {
+        TWAR = def_twar;
+      }
       
       Serial.write("receiver's id: ");
       Serial.write(sendTo + '0');
